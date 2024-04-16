@@ -1,0 +1,37 @@
+<ui:global source="[TempUIinfo]">
+    <script>
+        MutationObserDefine({
+            gameOverPng: "./img/system/GameOver.png",
+            itemList:[
+                { des: 'aabb', url: './img/system/Window.png', url1: './img/system/Window.png' },
+                { des: 'aabb1', url: './img/system/IconSet.png', url1: './img/system/Window.png' },
+                { des: 'aabb2', url: './img/system/IconSet.png', url1: './img/system/Window.png' }
+            ],
+
+        })
+    </script>
+    <ui:List class="list" :source="[itemList]">
+        <ui:Sprite class="bg" :src="[item.url]" :for="item of itemList">
+            <ui:Icon class="icon" :src="{ define.gameOverPng }"></ui:Icon>
+            <ui:Text class="text1" :text="[item.des]" overflow="wrap"></ui:Text>
+            <ui:Graphics class="graphics" :source="[graphics]"></ui:Graphics>
+        </ui:Sprite>
+    </ui:List>
+    <!-- all ui type -->
+    <ui:Container></ui:Container>
+    <ui:Sprite></ui:Sprite>
+    <ui:Text></ui:Text>
+    <ui:Graphics></ui:Graphics>
+    <ui:ConfirmWindow></ui:ConfirmWindow>
+    <ui:Label class="label" source="[label]">
+        <ui:Sprite class="bg" source="[bg]">
+            <ui:Text class="main" source="[ttt]" overflow="mask"></ui:Text>
+            <ui:Text class="sub" source="[ttt1]" overflow="flow"></ui:Text>
+        </ui:Sprite>
+    </ui:Label>
+    <ui:Progress class="progress">
+        <ui:Sprite class="bg" source="./img/menu/progressbg.png">
+            <ui:Sprite source="./img/menu/progressbgBlock.png"></ui:Sprite>
+        </ui:Sprite>
+    </ui:Progress>
+</ui:global>
