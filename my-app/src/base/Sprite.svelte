@@ -1,23 +1,17 @@
 <!-- 背包 -->
 <script>
-  export let items = [];
+  export let _name = 'sprite';
 
-  // 删除物品
-  function removeItem(index) {
-    items = items.filter((_, i) => i !== index);
-  }
+  _name;
 </script>
 
-<h2>Backpack</h2>
-
-<ul>
-  {#each items as item, index}
-    <li>{item} <button on:click={() => removeItem(index)}>Remove</button></li>
-  {/each}
-</ul>
+<u_sprite>
+  i am sprite
+</u_sprite>
 
 <style>
-  ul{
-    margin: 80px;
+  u_sprite{
+    margin-top: 10px;
   }
 </style>
+

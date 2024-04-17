@@ -7,6 +7,9 @@
     common ? factory(exports) : factory( global.Svelte2Pixi = { } ); //Universal
 })(window || global || self || globalThis, function (exports) {
 
+    let div = document.createElement('div');
+    div.innerHTML = `<u_container id="svelte-app" style="position:absolute;z-index:999;color:white;pointer-events:none;touch-action:none;"></u_container>`;
+    document.body.appendChild(div.children[0]);
     // exports.SvelteBuiltIn = SvelteBuiltIn;
 
     let backbag = new SvelteBuiltIn.Backpack({

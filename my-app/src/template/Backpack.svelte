@@ -1,25 +1,13 @@
 <!-- 背包 -->
 <script>
 
-  export let items = [];
-
-  // 删除物品
-  function removeItem(index) {
-    items = items.filter((_, i) => i !== index);
-  }
+  import Sprite from "../base/Sprite.svelte";
   
 </script>
 
-<h2>Backpack</h2>
-
-<ul>
-  {#each items as item, index}
-    <li>{item} <button on:click={() => removeItem(index)}>Remove</button></li>
-  {/each}
-</ul>
-
-<style>
-  ul{
-    margin: 80px;
-  }
-</style>
+<h2>
+  Backpack
+  <ul>
+    <Sprite/><Sprite/><Sprite/>
+  </ul>
+</h2>
