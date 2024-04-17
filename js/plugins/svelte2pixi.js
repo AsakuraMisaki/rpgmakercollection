@@ -1,5 +1,5 @@
 
-import * as Svelte from './svelte/src/runtime/index.js';
+
 // import * as Compiler from './svelte/src/compiler/index.js';
 (function (global, factory) {
     if(!global) return;
@@ -7,13 +7,13 @@ import * as Svelte from './svelte/src/runtime/index.js';
     common ? factory(exports) : factory( global.Svelte2Pixi = { } ); //Universal
 })(window || global || self || globalThis, function (exports) {
 
-    exports.Svelte = Svelte;
+    // exports.SvelteBuiltIn = SvelteBuiltIn;
 
-    let component2 = new YourLibrary({
+    let backbag = new SvelteBuiltIn.Backpack({
         target: document.getElementById('svelte-app'),
         // 这里可以传递组件的属性
     });
-    exports.component2 = component2;
+    // exports.component2 = component2;
     // const Compiler = require('svelte/compiler');
     // const fs = require('fs');
 
