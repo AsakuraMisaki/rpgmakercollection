@@ -4,6 +4,7 @@ var $plugins =
 [
 {"name":"AltMenuScreen","status":true,"description":"Alternative menu screen layout.","parameters":{}},
 {"name":"MutationObser","status":false,"description":"h5桥接PIXI的文本驱动UI框架","parameters":{"DKTools.Localization:{}":"false","SimpleWorkEditor":"false"}},
-{"name":"vue","status":true,"description":"","parameters":{}},
-{"name":"vue2pixi","status":true,"description":"","parameters":{}}
+{"name":"vue","status":false,"description":"","parameters":{}},
+{"name":"vue2pixi","status":false,"description":"","parameters":{}},
+{"name":"MutationObser copy","status":true,"description":"","parameters":{}}
 ];

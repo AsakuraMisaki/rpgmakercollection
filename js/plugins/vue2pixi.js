@@ -7,6 +7,9 @@
     const _version = `0.1`;
     const FS = (typeof require != 'undefined' ? require('fs') : null);
 
+    new builtin({
+        target: document.getElementById('svelte-app')
+    });
 
     let loader = function () { this.initialize(...arguments) };
     loader.prototype.initialize = function(path, type, options = { }){

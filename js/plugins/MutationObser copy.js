@@ -89,7 +89,7 @@ let Handle = function (source, template) {
 }
 
 const fs = require('fs');
-const { Vue2Pixi, splicer } = require('./vue2pixi');
+
 
 let globalWatchWaiting = {};
 let globalWatching = {};
