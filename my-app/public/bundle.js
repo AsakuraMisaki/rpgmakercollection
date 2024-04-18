@@ -233,16 +233,21 @@
 	}
 
 	/**
-	 * Schedules a callback to run immediately after the component has been updated.
+	 * The `onMount` function schedules a callback to run as soon as the component has been mounted to the DOM.
+	 * It must be called during the component's initialisation (but doesn't need to live *inside* the component;
+	 * it can be called from an external module).
 	 *
-	 * The first time the callback runs will be after the initial `onMount`
+	 * If a function is returned _synchronously_ from `onMount`, it will be called when the component is unmounted.
 	 *
-	 * https://svelte.dev/docs/svelte#afterupdate
-	 * @param {() => any} fn
+	 * `onMount` does not run inside a [server-side component](https://svelte.dev/docs#run-time-server-side-component-api).
+	 *
+	 * https://svelte.dev/docs/svelte#onmount
+	 * @template T
+	 * @param {() => import('./private.js').NotFunction<T> | Promise<import('./private.js').NotFunction<T>> | (() => any)} fn
 	 * @returns {void}
 	 */
-	function afterUpdate(fn) {
-		get_current_component().$$.after_update.push(fn);
+	function onMount(fn) {
+		get_current_component().$$.on_mount.push(fn);
 	}
 
 	const dirty_components = [];
@@ -682,78 +687,79 @@
 		return {
 			c() {
 				u_sprite = element("u_sprite");
-				t = text(/*text*/ ctx[11]);
-				set_style(u_sprite, "display", /*display*/ ctx[0]);
-				set_style(u_sprite, "margin-top", /*marginTop*/ ctx[1] + "px");
-				set_style(u_sprite, "margin-left", /*marginLeft*/ ctx[2] + "px");
-				set_style(u_sprite, "margin-bottom", /*marginBottom*/ ctx[3] + "px");
-				set_style(u_sprite, "margin-right", /*marginRight*/ ctx[4] + "px");
-				set_style(u_sprite, "position", /*position*/ ctx[12]);
-				set_style(u_sprite, "left", /*left*/ ctx[5] + "px");
-				set_style(u_sprite, "top", /*top*/ ctx[6] + "px");
-				set_style(u_sprite, "bottom", /*bottom*/ ctx[7] + "px");
-				set_style(u_sprite, "right", /*right*/ ctx[8] + "px");
-				set_style(u_sprite, "opacity", /*opacity*/ ctx[9]);
-				set_style(u_sprite, "visibility", /*visibility*/ ctx[10]);
-				attr(u_sprite, "data", /*data*/ ctx[13]);
+				t = text(/*text*/ ctx[12]);
+				set_style(u_sprite, "display", /*display*/ ctx[1]);
+				set_style(u_sprite, "margin-top", /*marginTop*/ ctx[2] + "px");
+				set_style(u_sprite, "margin-left", /*marginLeft*/ ctx[3] + "px");
+				set_style(u_sprite, "margin-bottom", /*marginBottom*/ ctx[4] + "px");
+				set_style(u_sprite, "margin-right", /*marginRight*/ ctx[5] + "px");
+				set_style(u_sprite, "position", /*position*/ ctx[13]);
+				set_style(u_sprite, "left", /*left*/ ctx[6] + "px");
+				set_style(u_sprite, "top", /*top*/ ctx[7] + "px");
+				set_style(u_sprite, "bottom", /*bottom*/ ctx[8] + "px");
+				set_style(u_sprite, "right", /*right*/ ctx[9] + "px");
+				set_style(u_sprite, "opacity", /*opacity*/ ctx[10]);
+				set_style(u_sprite, "visibility", /*visibility*/ ctx[11]);
+				attr(u_sprite, "create", /*create*/ ctx[14]);
 			},
 			m(target, anchor) {
 				insert(target, u_sprite, anchor);
 				append(u_sprite, t);
+				/*u_sprite_binding*/ ctx[16](u_sprite);
 			},
 			p(ctx, [dirty]) {
-				if (dirty & /*text*/ 2048) set_data(t, /*text*/ ctx[11]);
+				if (dirty & /*text*/ 4096) set_data(t, /*text*/ ctx[12]);
 
-				if (dirty & /*display*/ 1) {
-					set_style(u_sprite, "display", /*display*/ ctx[0]);
+				if (dirty & /*display*/ 2) {
+					set_style(u_sprite, "display", /*display*/ ctx[1]);
 				}
 
-				if (dirty & /*marginTop*/ 2) {
-					set_style(u_sprite, "margin-top", /*marginTop*/ ctx[1] + "px");
+				if (dirty & /*marginTop*/ 4) {
+					set_style(u_sprite, "margin-top", /*marginTop*/ ctx[2] + "px");
 				}
 
-				if (dirty & /*marginLeft*/ 4) {
-					set_style(u_sprite, "margin-left", /*marginLeft*/ ctx[2] + "px");
+				if (dirty & /*marginLeft*/ 8) {
+					set_style(u_sprite, "margin-left", /*marginLeft*/ ctx[3] + "px");
 				}
 
-				if (dirty & /*marginBottom*/ 8) {
-					set_style(u_sprite, "margin-bottom", /*marginBottom*/ ctx[3] + "px");
+				if (dirty & /*marginBottom*/ 16) {
+					set_style(u_sprite, "margin-bottom", /*marginBottom*/ ctx[4] + "px");
 				}
 
-				if (dirty & /*marginRight*/ 16) {
-					set_style(u_sprite, "margin-right", /*marginRight*/ ctx[4] + "px");
+				if (dirty & /*marginRight*/ 32) {
+					set_style(u_sprite, "margin-right", /*marginRight*/ ctx[5] + "px");
 				}
 
-				if (dirty & /*position*/ 4096) {
-					set_style(u_sprite, "position", /*position*/ ctx[12]);
+				if (dirty & /*position*/ 8192) {
+					set_style(u_sprite, "position", /*position*/ ctx[13]);
 				}
 
-				if (dirty & /*left*/ 32) {
-					set_style(u_sprite, "left", /*left*/ ctx[5] + "px");
+				if (dirty & /*left*/ 64) {
+					set_style(u_sprite, "left", /*left*/ ctx[6] + "px");
 				}
 
-				if (dirty & /*top*/ 64) {
-					set_style(u_sprite, "top", /*top*/ ctx[6] + "px");
+				if (dirty & /*top*/ 128) {
+					set_style(u_sprite, "top", /*top*/ ctx[7] + "px");
 				}
 
-				if (dirty & /*bottom*/ 128) {
-					set_style(u_sprite, "bottom", /*bottom*/ ctx[7] + "px");
+				if (dirty & /*bottom*/ 256) {
+					set_style(u_sprite, "bottom", /*bottom*/ ctx[8] + "px");
 				}
 
-				if (dirty & /*right*/ 256) {
-					set_style(u_sprite, "right", /*right*/ ctx[8] + "px");
+				if (dirty & /*right*/ 512) {
+					set_style(u_sprite, "right", /*right*/ ctx[9] + "px");
 				}
 
-				if (dirty & /*opacity*/ 512) {
-					set_style(u_sprite, "opacity", /*opacity*/ ctx[9]);
+				if (dirty & /*opacity*/ 1024) {
+					set_style(u_sprite, "opacity", /*opacity*/ ctx[10]);
 				}
 
-				if (dirty & /*visibility*/ 1024) {
-					set_style(u_sprite, "visibility", /*visibility*/ ctx[10]);
+				if (dirty & /*visibility*/ 2048) {
+					set_style(u_sprite, "visibility", /*visibility*/ ctx[11]);
 				}
 
-				if (dirty & /*data*/ 8192) {
-					attr(u_sprite, "data", /*data*/ ctx[13]);
+				if (dirty & /*create*/ 16384) {
+					attr(u_sprite, "create", /*create*/ ctx[14]);
 				}
 			},
 			i: noop,
@@ -762,6 +768,8 @@
 				if (detaching) {
 					detach(u_sprite);
 				}
+
+				/*u_sprite_binding*/ ctx[16](null);
 			}
 		};
 	}
@@ -780,26 +788,48 @@
 		let { visibility = 'visible' } = $$props;
 		let { text = '' } = $$props;
 		let { position = 'relative' } = $$props;
-		let { data = {} } = $$props;
+		let { _self = null } = $$props;
+
+		let { self = function () {
+			return _self;
+		} } = $$props;
+
+		let { create = function () {
+			
+		} } = $$props;
+
+		onMount(() => {
+			create(...arguments, this);
+		});
+
+		function u_sprite_binding($$value) {
+			binding_callbacks[$$value ? 'unshift' : 'push'](() => {
+				_self = $$value;
+				$$invalidate(0, _self);
+			});
+		}
 
 		$$self.$$set = $$props => {
-			if ('display' in $$props) $$invalidate(0, display = $$props.display);
-			if ('marginTop' in $$props) $$invalidate(1, marginTop = $$props.marginTop);
-			if ('marginLeft' in $$props) $$invalidate(2, marginLeft = $$props.marginLeft);
-			if ('marginBottom' in $$props) $$invalidate(3, marginBottom = $$props.marginBottom);
-			if ('marginRight' in $$props) $$invalidate(4, marginRight = $$props.marginRight);
-			if ('left' in $$props) $$invalidate(5, left = $$props.left);
-			if ('top' in $$props) $$invalidate(6, top = $$props.top);
-			if ('bottom' in $$props) $$invalidate(7, bottom = $$props.bottom);
-			if ('right' in $$props) $$invalidate(8, right = $$props.right);
-			if ('opacity' in $$props) $$invalidate(9, opacity = $$props.opacity);
-			if ('visibility' in $$props) $$invalidate(10, visibility = $$props.visibility);
-			if ('text' in $$props) $$invalidate(11, text = $$props.text);
-			if ('position' in $$props) $$invalidate(12, position = $$props.position);
-			if ('data' in $$props) $$invalidate(13, data = $$props.data);
+			if ('display' in $$props) $$invalidate(1, display = $$props.display);
+			if ('marginTop' in $$props) $$invalidate(2, marginTop = $$props.marginTop);
+			if ('marginLeft' in $$props) $$invalidate(3, marginLeft = $$props.marginLeft);
+			if ('marginBottom' in $$props) $$invalidate(4, marginBottom = $$props.marginBottom);
+			if ('marginRight' in $$props) $$invalidate(5, marginRight = $$props.marginRight);
+			if ('left' in $$props) $$invalidate(6, left = $$props.left);
+			if ('top' in $$props) $$invalidate(7, top = $$props.top);
+			if ('bottom' in $$props) $$invalidate(8, bottom = $$props.bottom);
+			if ('right' in $$props) $$invalidate(9, right = $$props.right);
+			if ('opacity' in $$props) $$invalidate(10, opacity = $$props.opacity);
+			if ('visibility' in $$props) $$invalidate(11, visibility = $$props.visibility);
+			if ('text' in $$props) $$invalidate(12, text = $$props.text);
+			if ('position' in $$props) $$invalidate(13, position = $$props.position);
+			if ('_self' in $$props) $$invalidate(0, _self = $$props._self);
+			if ('self' in $$props) $$invalidate(15, self = $$props.self);
+			if ('create' in $$props) $$invalidate(14, create = $$props.create);
 		};
 
 		return [
+			_self,
 			display,
 			marginTop,
 			marginLeft,
@@ -813,7 +843,9 @@
 			visibility,
 			text,
 			position,
-			data
+			create,
+			self,
+			u_sprite_binding
 		];
 	}
 
@@ -822,20 +854,22 @@
 			super();
 
 			init(this, options, instance$3, create_fragment$4, safe_not_equal, {
-				display: 0,
-				marginTop: 1,
-				marginLeft: 2,
-				marginBottom: 3,
-				marginRight: 4,
-				left: 5,
-				top: 6,
-				bottom: 7,
-				right: 8,
-				opacity: 9,
-				visibility: 10,
-				text: 11,
-				position: 12,
-				data: 13
+				display: 1,
+				marginTop: 2,
+				marginLeft: 3,
+				marginBottom: 4,
+				marginRight: 5,
+				left: 6,
+				top: 7,
+				bottom: 8,
+				right: 9,
+				opacity: 10,
+				visibility: 11,
+				text: 12,
+				position: 13,
+				_self: 0,
+				self: 15,
+				create: 14
 			});
 		}
 	}
@@ -1196,20 +1230,20 @@
 
 	function get_each_context(ctx, list, i) {
 		const child_ctx = ctx.slice();
-		child_ctx[10] = list[i];
-		child_ctx[12] = i;
+		child_ctx[13] = list[i];
+		child_ctx[15] = i;
 		return child_ctx;
 	}
 
-	// (49:4) {#if item.name }
+	// (58:4) {#if item.name }
 	function create_if_block(ctx) {
 		let sprite;
 		let current;
 
 		sprite = new Sprite({
 				props: {
-					text: /*item*/ ctx[10].name,
-					data: [/*item*/ ctx[10], /*index*/ ctx[12]]
+					text: /*item*/ ctx[13].name,
+					create: /*func*/ ctx[7]
 				}
 			});
 
@@ -1237,11 +1271,11 @@
 		};
 	}
 
-	// (48:2) {#each items as item, index}
+	// (57:2) {#each items as item, index}
 	function create_each_block(ctx) {
 		let if_block_anchor;
 		let current;
-		let if_block = /*item*/ ctx[10].name && create_if_block(ctx);
+		let if_block = /*item*/ ctx[13].name && create_if_block(ctx);
 
 		return {
 			c() {
@@ -1254,7 +1288,7 @@
 				current = true;
 			},
 			p(ctx, dirty) {
-				if (/*item*/ ctx[10].name) if_block.p(ctx, dirty);
+				if (/*item*/ ctx[13].name) if_block.p(ctx, dirty);
 			},
 			i(local) {
 				if (current) return;
@@ -1284,9 +1318,15 @@
 		let current;
 		let mounted;
 		let dispose;
-		let sprite_props = { top: /*totalHeight*/ ctx[2], text: "S" };
+
+		let sprite_props = {
+			left: /*totalWidth*/ ctx[2],
+			text: "S",
+			top: "50"
+		};
+
 		sprite = new Sprite({ props: sprite_props });
-		/*sprite_binding*/ ctx[5](sprite);
+		/*sprite_binding*/ ctx[6](sprite);
 		let each_value = ensure_array_like(/*items*/ ctx[3]);
 		let each_blocks = [];
 
@@ -1325,7 +1365,7 @@
 
 				append(u_backpack, t1);
 				append(u_backpack, button);
-				/*u_backpack_binding*/ ctx[6](u_backpack);
+				/*u_backpack_binding*/ ctx[8](u_backpack);
 				current = true;
 
 				if (!mounted) {
@@ -1335,10 +1375,10 @@
 			},
 			p(ctx, [dirty]) {
 				const sprite_changes = {};
-				if (dirty & /*totalHeight*/ 4) sprite_changes.top = /*totalHeight*/ ctx[2];
+				if (dirty & /*totalWidth*/ 4) sprite_changes.left = /*totalWidth*/ ctx[2];
 				sprite.$set(sprite_changes);
 
-				if (dirty & /*items*/ 8) {
+				if (dirty & /*items, spriteRef*/ 40) {
 					each_value = ensure_array_like(/*items*/ ctx[3]);
 					let i;
 
@@ -1390,10 +1430,10 @@
 					detach(u_backpack);
 				}
 
-				/*sprite_binding*/ ctx[5](null);
+				/*sprite_binding*/ ctx[6](null);
 				destroy_component(sprite);
 				destroy_each(each_blocks, detaching);
-				/*u_backpack_binding*/ ctx[6](null);
+				/*u_backpack_binding*/ ctx[8](null);
 				mounted = false;
 				dispose();
 			}
@@ -1403,23 +1443,8 @@
 	function instance($$self, $$props, $$invalidate) {
 		let top;
 		let selector;
-		let totalHeight = 0;
-
-		afterUpdate(() => {
-			console.log(selector);
-			let sprites = top.getElementsByTagName('u_sprite');
-			sprites = Array.prototype.slice.call(sprites);
-			$$invalidate(2, totalHeight = 0);
-
-			sprites.forEach(sprite => {
-				if (selector == sprite) return;
-				console.warn(sprite);
-
-				if (sprite == select) {
-					$$invalidate(2, totalHeight = sprite.offsetHeight);
-				}
-			});
-		});
+		let totalWidth = 0;
+		let mapping = new Map();
 
 		//单元测试 (UI数据独立测试)
 		let items = [{ name: undefined }, { name: 'unit test' }, { name: 'unit test1111111' }];
@@ -1435,6 +1460,14 @@
 			}
 
 			select = items[count];
+
+			if (select.sprite) {
+				$$invalidate(2, totalWidth = select.sprite.$$.ctx[14]().offsetLeft);
+			}
+		};
+
+		let spriteRef = (item, sprite) => {
+			mapping.set(item, sprite);
 		};
 
 		function sprite_binding($$value) {
@@ -1443,6 +1476,10 @@
 				$$invalidate(1, selector);
 			});
 		}
+
+		const func = item => {
+			spriteRef(item);
+		};
 
 		function u_backpack_binding($$value) {
 			binding_callbacks[$$value ? 'unshift' : 'push'](() => {
@@ -1454,10 +1491,12 @@
 		return [
 			top,
 			selector,
-			totalHeight,
+			totalWidth,
 			items,
 			selectTest,
+			spriteRef,
 			sprite_binding,
+			func,
 			u_backpack_binding
 		];
 	}

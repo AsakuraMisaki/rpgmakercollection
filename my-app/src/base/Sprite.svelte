@@ -1,4 +1,6 @@
 <script>
+    import { onMount } from "svelte";
+
     export let display = '';
     export let marginTop = 0;
     export let marginLeft = 0;
@@ -12,7 +14,16 @@
     export let visibility = 'visible';
     export let text = '';
     export let position = 'relative';
-    export let data = {};
+    export let _self = null;
+    export let self = function(){
+      return _self;
+    }
+    export let create = function(){
+
+    }
+    onMount(()=>{
+      create(...arguments, this);
+    })
 </script>
 
 <u_sprite style="
@@ -28,7 +39,7 @@
   right: {right}px;
   opacity: {opacity};
   visibility: {visibility};
-  " data={data}> { text }
+  " bind:this={_self} create={create}> { text }
 </u_sprite>
 
 <!-- 这个是子组件，如何从刚才的父组件改这个组件的display -->

@@ -8,21 +8,21 @@
   let top;
   let selector;
 
-  let totalHeight = 0;
+  let totalWidth = 0;
   let mapping = new Map();
-	afterUpdate(() => {
-    console.log(selector);
-		let sprites = top.getElementsByTagName('u_sprite');
-    sprites = Array.prototype.slice.call(sprites);
-    totalHeight = 0;
-    sprites.forEach(sprite => {
-      if(selector == sprite) return;
-      console.warn(sprite);
-      if(sprite == select){
-        totalHeight = sprite.offsetHeight;
-      }
-    });
-	});
+	// afterUpdate(() => {
+  //   console.log(selector);
+	// 	let sprites = top.getElementsByTagName('u_sprite');
+  //   sprites = Array.prototype.slice.call(sprites);
+  //   totalWidth = 0;
+  //   sprites.forEach(sprite => {
+  //     if(selector == sprite) return;
+  //     console.warn(sprite);
+  //     if(sprite == select){
+  //       totalWidth = sprite.offsetHeight;
+  //     }
+  //   });
+	// });
 
   let display = 'flex';
 
@@ -39,15 +39,25 @@
       count = 0;
     }
     select = items[count];
+    if(select.sprite){
+      totalWidth = select.sprite.$$.ctx[14]().offsetLeft;
+    }
   }
+
+  let spriteRef = (item, sprite)=>{
+    mapping.set(item, sprite);
+  }
+
+  let itemSprite;
   
 </script>
 
 <u_backpack bind:this={top}>
-  <Sprite top={totalHeight} bind:this={selector} text="S"/>
+  <Sprite left={totalWidth} bind:this={selector} text="S" top=50/>
   {#each items as item, index}
     {#if item.name }
-      <Sprite text={item.name} data={[item, index]}/>
+    <!-- 侦听工作流 -->
+      <Sprite text={item.name} create={(item)=>{spriteRef(item)}}/>
     {/if}
   {/each}
   <button on:click={selectTest}>
