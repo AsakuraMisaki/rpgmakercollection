@@ -8,7 +8,7 @@
 })(window || global || self || globalThis, function (exports) {
 
     let div = document.createElement('div');
-    div.innerHTML = `<u_container id="svelte-app" style="position:absolute;z-index:999;color:white;pointer-events:none;touch-action:none;"></u_container>`;
+    div.innerHTML = `<u_container id="svelte-app" style="position:absolute;z-index:999;color:white;"></u_container>`;
     document.body.appendChild(div.children[0]);
     // exports.SvelteBuiltIn = SvelteBuiltIn;
 
@@ -16,6 +16,8 @@
         target: document.getElementById('svelte-app'),
         // 这里可以传递组件的属性
     });
+
+    exports.backbag = backbag;
     // exports.component2 = component2;
     // const Compiler = require('svelte/compiler');
     // const fs = require('fs');
