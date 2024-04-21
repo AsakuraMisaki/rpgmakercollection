@@ -18,7 +18,12 @@
     export let self = function () {
         return _self;
     };
-    export let create = function () {};
+    export let create = function () {
+        console.log(this);
+    };
+    onMount(()=>{
+        create();
+    })
 </script>
 
 <u_sprite

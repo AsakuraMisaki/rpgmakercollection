@@ -683,6 +683,8 @@
 	function create_fragment$4(ctx) {
 		let u_sprite;
 		let t;
+		let mounted;
+		let dispose;
 
 		return {
 			c() {
@@ -700,14 +702,22 @@
 				set_style(u_sprite, "right", /*right*/ ctx[9] + "px");
 				set_style(u_sprite, "opacity", /*opacity*/ ctx[10]);
 				set_style(u_sprite, "visibility", /*visibility*/ ctx[11]);
-				attr(u_sprite, "create", /*create*/ ctx[14]);
 			},
 			m(target, anchor) {
 				insert(target, u_sprite, anchor);
 				append(u_sprite, t);
 				/*u_sprite_binding*/ ctx[16](u_sprite);
+
+				if (!mounted) {
+					dispose = listen(u_sprite, "mount", function () {
+						if (is_function(/*create*/ ctx[14])) /*create*/ ctx[14].apply(this, arguments);
+					});
+
+					mounted = true;
+				}
 			},
-			p(ctx, [dirty]) {
+			p(new_ctx, [dirty]) {
+				ctx = new_ctx;
 				if (dirty & /*text*/ 4096) set_data(t, /*text*/ ctx[12]);
 
 				if (dirty & /*display*/ 2) {
@@ -757,10 +767,6 @@
 				if (dirty & /*visibility*/ 2048) {
 					set_style(u_sprite, "visibility", /*visibility*/ ctx[11]);
 				}
-
-				if (dirty & /*create*/ 16384) {
-					attr(u_sprite, "create", /*create*/ ctx[14]);
-				}
 			},
 			i: noop,
 			o: noop,
@@ -770,12 +776,14 @@
 				}
 
 				/*u_sprite_binding*/ ctx[16](null);
+				mounted = false;
+				dispose();
 			}
 		};
 	}
 
 	function instance$3($$self, $$props, $$invalidate) {
-		let { display = '' } = $$props;
+		let { display = "" } = $$props;
 		let { marginTop = 0 } = $$props;
 		let { marginLeft = 0 } = $$props;
 		let { marginBottom = 0 } = $$props;
@@ -785,9 +793,9 @@
 		let { bottom = 0 } = $$props;
 		let { right = 0 } = $$props;
 		let { opacity = 255 } = $$props;
-		let { visibility = 'visible' } = $$props;
-		let { text = '' } = $$props;
-		let { position = 'relative' } = $$props;
+		let { visibility = "visible" } = $$props;
+		let { text = "" } = $$props;
+		let { position = "relative" } = $$props;
 		let { _self = null } = $$props;
 
 		let { self = function () {
@@ -795,17 +803,17 @@
 		} } = $$props;
 
 		let { create = function () {
-			
+			console.log(this);
 		} } = $$props;
 
 		onMount(() => {
-			create(...arguments, this);
+			create();
 		});
 
 		function u_sprite_binding($$value) {
 			binding_callbacks[$$value ? 'unshift' : 'push'](() => {
-				_self = $$value;
-				$$invalidate(0, _self);
+				self = $$value;
+				$$invalidate(0, self);
 			});
 		}
 
@@ -823,13 +831,13 @@
 			if ('visibility' in $$props) $$invalidate(11, visibility = $$props.visibility);
 			if ('text' in $$props) $$invalidate(12, text = $$props.text);
 			if ('position' in $$props) $$invalidate(13, position = $$props.position);
-			if ('_self' in $$props) $$invalidate(0, _self = $$props._self);
-			if ('self' in $$props) $$invalidate(15, self = $$props.self);
+			if ('_self' in $$props) $$invalidate(15, _self = $$props._self);
+			if ('self' in $$props) $$invalidate(0, self = $$props.self);
 			if ('create' in $$props) $$invalidate(14, create = $$props.create);
 		};
 
 		return [
-			_self,
+			self,
 			display,
 			marginTop,
 			marginLeft,
@@ -844,7 +852,7 @@
 			text,
 			position,
 			create,
-			self,
+			_self,
 			u_sprite_binding
 		];
 	}
@@ -867,8 +875,8 @@
 				visibility: 11,
 				text: 12,
 				position: 13,
-				_self: 0,
-				self: 15,
+				_self: 15,
+				self: 0,
 				create: 14
 			});
 		}
