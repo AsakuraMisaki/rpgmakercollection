@@ -1230,22 +1230,33 @@
 
 	function get_each_context(ctx, list, i) {
 		const child_ctx = ctx.slice();
-		child_ctx[13] = list[i];
-		child_ctx[15] = i;
+		child_ctx[14] = list[i];
+		child_ctx[15] = list;
+		child_ctx[16] = i;
 		return child_ctx;
 	}
 
-	// (58:4) {#if item.name }
+	// (62:4) {#if item.name }
 	function create_if_block(ctx) {
 		let sprite;
+		let each_value = /*each_value*/ ctx[15];
+		let index = /*index*/ ctx[16];
 		let current;
 
-		sprite = new Sprite({
-				props: {
-					text: /*item*/ ctx[13].name,
-					create: /*func*/ ctx[7]
-				}
-			});
+		function func() {
+			return /*func*/ ctx[7](/*item*/ ctx[14]);
+		}
+
+		const assign_sprite = () => /*sprite_binding_1*/ ctx[8](sprite, each_value, index);
+		const unassign_sprite = () => /*sprite_binding_1*/ ctx[8](null, each_value, index);
+
+		let sprite_props = {
+			text: /*item*/ ctx[14].name,
+			create: func
+		};
+
+		sprite = new Sprite({ props: sprite_props });
+		assign_sprite();
 
 		return {
 			c() {
@@ -1255,7 +1266,21 @@
 				mount_component(sprite, target, anchor);
 				current = true;
 			},
-			p: noop,
+			p(new_ctx, dirty) {
+				ctx = new_ctx;
+
+				if (each_value !== /*each_value*/ ctx[15] || index !== /*index*/ ctx[16]) {
+					unassign_sprite();
+					each_value = /*each_value*/ ctx[15];
+					index = /*index*/ ctx[16];
+					assign_sprite();
+				}
+
+				const sprite_changes = {};
+				if (dirty & /*items*/ 8) sprite_changes.text = /*item*/ ctx[14].name;
+				if (dirty & /*items*/ 8) sprite_changes.create = func;
+				sprite.$set(sprite_changes);
+			},
 			i(local) {
 				if (current) return;
 				transition_in(sprite.$$.fragment, local);
@@ -1266,16 +1291,17 @@
 				current = false;
 			},
 			d(detaching) {
+				unassign_sprite();
 				destroy_component(sprite, detaching);
 			}
 		};
 	}
 
-	// (57:2) {#each items as item, index}
+	// (61:2) {#each items as item, index}
 	function create_each_block(ctx) {
 		let if_block_anchor;
 		let current;
-		let if_block = /*item*/ ctx[13].name && create_if_block(ctx);
+		let if_block = /*item*/ ctx[14].name && create_if_block(ctx);
 
 		return {
 			c() {
@@ -1288,7 +1314,28 @@
 				current = true;
 			},
 			p(ctx, dirty) {
-				if (/*item*/ ctx[13].name) if_block.p(ctx, dirty);
+				if (/*item*/ ctx[14].name) {
+					if (if_block) {
+						if_block.p(ctx, dirty);
+
+						if (dirty & /*items*/ 8) {
+							transition_in(if_block, 1);
+						}
+					} else {
+						if_block = create_if_block(ctx);
+						if_block.c();
+						transition_in(if_block, 1);
+						if_block.m(if_block_anchor.parentNode, if_block_anchor);
+					}
+				} else if (if_block) {
+					group_outros();
+
+					transition_out(if_block, 1, 1, () => {
+						if_block = null;
+					});
+
+					check_outros();
+				}
 			},
 			i(local) {
 				if (current) return;
@@ -1365,7 +1412,7 @@
 
 				append(u_backpack, t1);
 				append(u_backpack, button);
-				/*u_backpack_binding*/ ctx[8](u_backpack);
+				/*u_backpack_binding*/ ctx[9](u_backpack);
 				current = true;
 
 				if (!mounted) {
@@ -1433,7 +1480,7 @@
 				/*sprite_binding*/ ctx[6](null);
 				destroy_component(sprite);
 				destroy_each(each_blocks, detaching);
-				/*u_backpack_binding*/ ctx[8](null);
+				/*u_backpack_binding*/ ctx[9](null);
 				mounted = false;
 				dispose();
 			}
@@ -1453,6 +1500,7 @@
 		let count = -1;
 
 		let selectTest = function () {
+			console.log(mapping);
 			count++;
 
 			if (count >= items.length) {
@@ -1466,8 +1514,10 @@
 			}
 		};
 
+		// $: (window.$gamePlayer ? window.$gamePlayer.svelteAlert = select : null);
 		let spriteRef = (item, sprite) => {
-			mapping.set(item, sprite);
+			mapping.set(item, item.sprite);
+			delete item.sprite;
 		};
 
 		function sprite_binding($$value) {
@@ -1480,6 +1530,13 @@
 		const func = item => {
 			spriteRef(item);
 		};
+
+		function sprite_binding_1($$value, each_value, index) {
+			binding_callbacks[$$value ? 'unshift' : 'push'](() => {
+				each_value[index].sprite = $$value;
+				$$invalidate(3, items);
+			});
+		}
 
 		function u_backpack_binding($$value) {
 			binding_callbacks[$$value ? 'unshift' : 'push'](() => {
@@ -1497,6 +1554,7 @@
 			spriteRef,
 			sprite_binding,
 			func,
+			sprite_binding_1,
 			u_backpack_binding
 		];
 	}

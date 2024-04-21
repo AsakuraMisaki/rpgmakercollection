@@ -34,6 +34,7 @@
   let select = null;
   let count = -1;
   let selectTest = function(){
+    console.log(mapping);
     count++;
     if(count >= items.length){
       count = 0;
@@ -44,8 +45,11 @@
     }
   }
 
+  // $: (window.$gamePlayer ? window.$gamePlayer.svelteAlert = select : null);
+
   let spriteRef = (item, sprite)=>{
-    mapping.set(item, sprite);
+    mapping.set(item, item.sprite);
+    delete item.sprite;
   }
 
   let itemSprite;
@@ -57,7 +61,7 @@
   {#each items as item, index}
     {#if item.name }
     <!-- 侦听工作流 -->
-      <Sprite text={item.name} create={(item)=>{spriteRef(item)}}/>
+      <Sprite text={item.name} bind:this={ item.sprite } create={ ()=>{ spriteRef(item) } }/>
     {/if}
   {/each}
   <button on:click={selectTest}>
